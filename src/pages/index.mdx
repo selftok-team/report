@@ -15,7 +15,6 @@ import Image from "../components/Image.astro";
 import TwoColumns from "../components/TwoColumns.astro";
 import YouTubeVideo from "../components/YouTubeVideo.astro";
 import LaTeX from "../components/LaTeX.astro";
-import PDF from "../components/PDF.astro"
 
 import { ImageComparison } from "../components/ImageComparison.tsx";
 
@@ -24,10 +23,10 @@ import transformer from "../assets/transformer.webp";
 import Splat from "../components/Splat.tsx"
 import dogsDiffc from "../assets/dogs-diffc.png"
 import dogsTrue from "../assets/dogs-true.png"
-import figure1 from "../assets/figure1_p1.webp"
-import figure2 from "../assets/figure2_p1.webp"
-import figure_tokenizer from "../assets/figure_tokenizer_p1.png"
-import T2I_gallery_crop_p1 from "../assets/T2I_gallery_crop.pdf"
+import figure1 from "../assets/figure1.png"
+import figure2 from "../assets/figure2.png"
+import figure_tokenizer from "../assets/figure_tokenizer.png"
+import T2I_gallery_crop from "../assets/T2I_gallery_crop.png"
 
 
 import CodeBlock from "../components/CodeBlock.astro";
@@ -70,6 +69,10 @@ export const components = {pre: CodeBlock, table: Table}
 {/* <Video source={outside} /> */}
 
 ## Examples
+
+<Figure>
+  <Image slot="figure" source={T2I_gallery_crop} altText="T2I examples"/>
+</Figure>
 
 <HighlightedSection>
 
