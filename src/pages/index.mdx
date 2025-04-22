@@ -27,6 +27,8 @@ import figure1 from "../assets/figure1.png"
 import figure2 from "../assets/figure2.png"
 import figure_tokenizer from "../assets/figure_tokenizer.png"
 import T2I_gallery_crop from "../assets/T2I_gallery_crop.png"
+import single_editing from "../assets/single_editing.png"
+import multi_editing from "../assets/multi_editing.png"
 
 
 import CodeBlock from "../components/CodeBlock.astro";
@@ -70,8 +72,19 @@ export const components = {pre: CodeBlock, table: Table}
 
 ## Examples
 
+### T2I Examples
 <Figure>
   <Image slot="figure" source={T2I_gallery_crop} altText="T2I examples"/>
+</Figure>
+
+### Single Editing Examples
+<Figure>
+  <Image slot="figure" source={single_editing} altText="Single editing examples"/>
+</Figure>
+
+### Multi-round Editing Examples
+<Figure>
+  <Image slot="figure" source={single_editing} altText="multi editing examples"/>
 </Figure>
 
 <HighlightedSection>
