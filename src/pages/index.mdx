@@ -1,6 +1,6 @@
 ---
 layout: ../layouts/Layout.astro
-title: "Selftok: Non-spatial Discrete Visual Tokens of Autoregression, by Diffusion, and for Reasoning"
+title: "Selftok: Discrete Visual Tokens of Autoregression, by Diffusion, and for Reasoning"
 description: 
 favicon: favicon.svg
 thumbnail: screenshot-light.png
@@ -15,6 +15,7 @@ import Image from "../components/Image.astro";
 import TwoColumns from "../components/TwoColumns.astro";
 import YouTubeVideo from "../components/YouTubeVideo.astro";
 import LaTeX from "../components/LaTeX.astro";
+import PDF from "../components/PDF.astro"
 
 import { ImageComparison } from "../components/ImageComparison.tsx";
 
@@ -23,6 +24,10 @@ import transformer from "../assets/transformer.webp";
 import Splat from "../components/Splat.tsx"
 import dogsDiffc from "../assets/dogs-diffc.png"
 import dogsTrue from "../assets/dogs-true.png"
+import figure1 from "../assets/figure1_p1.webp"
+import figure2 from "../assets/figure2_p1.webp"
+import figure_tokenizer from "../assets/figure_tokenizer_p1.png"
+import T2I_gallery_crop_p1 from "../assets/T2I_gallery_crop.pdf"
 
 
 import CodeBlock from "../components/CodeBlock.astro";
@@ -35,22 +40,11 @@ export const components = {pre: CodeBlock, table: Table}
     {
       name: "Selftok Team",
       institution: "Media Technology Institute, Huawei Singapore",
-      notes: ["*", "†"],
-    },
-  ]}
-  conference="Conference Name"
-  notes={[
-    {
-      symbol: "*",
-      text: "author note one",
-    },
-    {
-      symbol: "†",
-      text: "author note two",
     },
   ]}
   links={[
-    {
+    /*TODO: add link*/
+    {/* {
       name: "Paper",
       url: "",
       icon: "ri:file-pdf-2-line",
@@ -69,30 +63,261 @@ export const components = {pre: CodeBlock, table: Table}
       name: "Bluesky",
       url: "",
       icon: "ri:bluesky-line"
-    }
+    } */}
   ]}
   />
 
-<Video source={outside} />
+{/* <Video source={outside} /> */}
+
+## Examples
 
 <HighlightedSection>
 
 ## Abstract
 
-This is a live demo for a template you can use to create a simple project page for your research paper. See the code for the template and instructions on how to use it yourself [here](https://github.com/RomanHauksson/academic-project-astro-template). It's made with the [Astro web framework](https://astro.build/) and styled with [Tailwind CSS](https://tailwindcss.com/). You write the content in [MDX](https://mdxjs.com/), which enables markdown formatting like **bold**, _italics_, and ~strikethrough~, as well as custom components like <SmallCaps>small caps.</SmallCaps>
+We completely discard the conventional *spatial prior* in image representation and introduce a novel *discrete* visual tokenizer: **Self-Consistency Tokenizer (Selftok)**. At its design core, we compose an autoregressive (AR) prior—mirroring the causal structure of language—into visual tokens by using the reverse diffusion process of image generation. The *AR property* makes Selftok fundamentally distinct from traditional spatial tokens in the following two key ways:
 
+- **Selftok offers an elegant and minimalist approach to *unify diffusion and AR* for vision-language models**: By representing images with Selftok tokens, we can train vision-language models (VLMs) using a purely discrete autoregressive architecture—like that in LLMs—without requiring additional modules or training objectives.  
+- **We theoretically show that *the AR prior satisfies the Bellman equation***, whereas the spatial prior does not. Therefore, Selftok supports reinforcement learning (RL) for visual generation with effectiveness comparable to that achieved in LLMs.
+
+Besides the AR property, Selftok is also a **SOTA tokenizer** that achieves both high-quality reconstruction and high compression bit rate. After representing the training images as Selftok tokens, as a pure AR model, our VLM achieves both **SOTA visual comprehension and generation performances**. Impressively, without using any text-image training pairs, a simple policy gradient RL working in the visual tokens can significantly boost the visual generation benchmark, surpassing all the existing models by a large margin.  
+
+Therefore, we believe that Selftok effectively addresses the long-standing challenge that visual tokens cannot support effective RL. When combined with the well-established strengths of RL in LLMs, this brings us one step closer to realizing a truly multimodal LLM.
 </HighlightedSection>
 
-## Figures
+## Introduction
 
-Use the figure component to display images, videos, equations, or any other element, with an optional caption.
+### Why Discrete?
 
 <Figure>
-  <Image slot="figure" source={transformer} altText="Diagram of the transformer deep learning architecture." />
-  <span slot="caption">Diagram of the transformer deep learning architecture.</span>
+  <Image slot="figure" source={figure1} altText="Comparison of pure discrete autoregressive model (dAR) and hybrid dAR/cAR model" />
+  <span slot="caption">
+    Comparison of (a) pure discrete autoregressive model (dAR) and (b) hybrid model that combines dAR and continuous autoregressive model (cAR). 
+    <LaTeX inline formula="\texttt{<BOS>}/\texttt{<BOV>}" /> indicates the start of a sentence/image. 
+    <LaTeX inline formula="w_i/v_i" /> denotes the <LaTeX inline formula="i" />-th language/visual token. 
+    Both models predict the next token given all previous ones, <em>e.g.</em>, 
+    <LaTeX inline formula="[\texttt{<BOS>}, \dots, \texttt{<$v_3$>}] \to \texttt{<$v_4$>}" />.
+  </span>
 </Figure>
 
-## Image comparison slider
+### Why Not Spatial?
+
+<Figure>
+  <Image slot="figure" source={figure2} altText="Illustration of spurious dependencies in spatial tokens and anti-causal links" />
+  <span slot="caption">
+    (a) As an image can be viewed as the effect of spatial pixels (or patches), observing any part of it introduces spurious dependencies among spatial tokens, making them non-AR. 
+    (b) Due to the anti-causal links (red) for spatial tokens, learning the locally optimal policy <LaTeX inline formula="\pi^*_4" /> for a later token (<em>e.g.</em>, <LaTeX inline formula="v_4" />) can propagate backward and interfere with earlier tokens that were already optimized (<em>e.g.</em>, <LaTeX inline formula="v_1,v_2,v_3" />). 
+    In contrast, AR tokens without such links do not have this issue. 
+    A more formal illustration is in Section 4.1.
+  </span>
+</Figure>
+
+## Selftok: Self-Consistency Tokenizer
+
+<Figure>
+  <Image slot="figure" source={figure_tokenizer} altText="Selftok architecture diagram" />
+  <span slot="caption">
+    Selftok architecture diagram. +**POS**: adding positional embeddings; 
+    **LN**: layernorm; **AdaLN**: token-aware adaptive layernorm, 
+    which differentiates token embeddings; **MSE**: the mean squared error 
+    for the reconstruction objective; **DM**: pre-trained diffusion model.
+  </span>
+</Figure>
+
+### Validation
+
+<Table>
+  <thead>
+    <tr>
+      <th>Tokenizer</th>
+      <th>Type</th>
+      <th>#Token</th>
+      <th>#Code</th>
+      <th>rFID↓</th>
+      <th>PSNR↑</th>
+      <th>SSIM↑</th>
+      <th>LPIPS↓</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LlamaGen</td>
+      <td>2D</td>
+      <td><LaTeX inline formula="16 \times 16" /></td>
+      <td><LaTeX inline formula="2^{14}" /></td>
+      <td><LaTeX inline formula="2.19" /></td>
+      <td><LaTeX inline formula="20.67" /></td>
+      <td><LaTeX inline formula="0.589" /></td>
+      <td><LaTeX inline formula="0.132" /></td>
+    </tr>
+    <tr>
+      <td>MaskBiT<sup>†</sup></td>
+      <td>2D</td>
+      <td><LaTeX inline formula="16 \times 16" /></td>
+      <td><LaTeX inline formula="2^{14}" /></td>
+      <td><LaTeX inline formula="1.37" /></td>
+      <td><LaTeX inline formula="21.50" /></td>
+      <td><LaTeX inline formula="0.560" /></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Cosmos</td>
+      <td>2D</td>
+      <td><LaTeX inline formula="16 \times 16" /></td>
+      <td><LaTeX inline formula="\approx 2^{16}" /></td>
+      <td><LaTeX inline formula="4.40" /></td>
+      <td><LaTeX inline formula="19.98" /></td>
+      <td><LaTeX inline formula="0.536" /></td>
+      <td><LaTeX inline formula="0.153" /></td>
+    </tr>
+    <tr>
+      <td>VQGAN-LC<sup>†</sup></td>
+      <td>2D</td>
+      <td><LaTeX inline formula="16 \times 16" /></td>
+      <td><LaTeX inline formula="100,\!000" /></td>
+      <td><LaTeX inline formula="2.62" /></td>
+      <td><LaTeX inline formula="23.80" /></td>
+      <td><LaTeX inline formula="0.589" /></td>
+      <td><LaTeX inline formula="0.120" /></td>
+    </tr>
+    <tr>
+      <td>OpenMagViT-V2</td>
+      <td>2D</td>
+      <td><LaTeX inline formula="16 \times 16" /></td>
+      <td><LaTeX inline formula="2^{18}" /></td>
+      <td><LaTeX inline formula="1.17" /></td>
+      <td><LaTeX inline formula="21.63" /></td>
+      <td><LaTeX inline formula="0.640" /></td>
+      <td><LaTeX inline formula="0.111" /></td>
+    </tr>
+    <tr>
+      <td>ViT-VQGAN<sup>†</sup></td>
+      <td>2D</td>
+      <td><LaTeX inline formula="32 \times 32" /></td>
+      <td><LaTeX inline formula="2^{13}" /></td>
+      <td><LaTeX inline formula="1.28" /></td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>LlamaGen</td>
+      <td>2D</td>
+      <td><LaTeX inline formula="32 \times 32" /></td>
+      <td><LaTeX inline formula="2^{14}" /></td>
+      <td><LaTeX inline formula="0.59" /></td>
+      <td><LaTeX inline formula="24.44" /></td>
+      <td><LaTeX inline formula="0.768" /></td>
+      <td><LaTeX inline formula="0.064" /></td>
+    </tr>
+    <tr>
+      <td>Cosmos</td>
+      <td>2D</td>
+      <td><LaTeX inline formula="32 \times 32" /></td>
+      <td><LaTeX inline formula="\approx 2^{16}" /></td>
+      <td><LaTeX inline formula="0.87" /></td>
+      <td><LaTeX inline formula="24.82" /></td>
+      <td><LaTeX inline formula="0.763" /></td>
+      <td><LaTeX inline formula="0.070" /></td>
+    </tr>
+    <tr>
+      <td>VAR</td>
+      <td>2D</td>
+      <td><LaTeX inline formula="680" /></td>
+      <td><LaTeX inline formula="2^{12}" /></td>
+      <td><LaTeX inline formula="0.99" /></td>
+      <td><LaTeX inline formula="22.12" /></td>
+      <td><LaTeX inline formula="0.624" /></td>
+      <td><LaTeX inline formula="0.109" /></td>
+    </tr>
+    <tr class="border-t">
+      <td>TiTok-L-32</td>
+      <td>1D</td>
+      <td><LaTeX inline formula="32" /></td>
+      <td><LaTeX inline formula="2^{12}" /></td>
+      <td><LaTeX inline formula="2.21" /></td>
+      <td><LaTeX inline formula="15.60" /></td>
+      <td><LaTeX inline formula="0.359" /></td>
+      <td><LaTeX inline formula="0.322" /></td>
+    </tr>
+    <tr>
+      <td>TiTok-B-64</td>
+      <td>1D</td>
+      <td><LaTeX inline formula="64" /></td>
+      <td><LaTeX inline formula="2^{12}" /></td>
+      <td><LaTeX inline formula="1.70" /></td>
+      <td><LaTeX inline formula="16.80" /></td>
+      <td><LaTeX inline formula="0.407" /></td>
+      <td><LaTeX inline formula="0.252" /></td>
+    </tr>
+    <tr>
+      <td>TiTok-S-128</td>
+      <td>1D</td>
+      <td><LaTeX inline formula="128" /></td>
+      <td><LaTeX inline formula="2^{12}" /></td>
+      <td><LaTeX inline formula="1.71" /></td>
+      <td><LaTeX inline formula="17.52" /></td>
+      <td><LaTeX inline formula="0.437" /></td>
+      <td><LaTeX inline formula="0.210" /></td>
+    </tr>
+    <tr>
+      <td>FlexTok</td>
+      <td>1D</td>
+      <td><LaTeX inline formula="256" /></td>
+      <td><LaTeX inline formula="64,\!000" /></td>
+      <td><LaTeX inline formula="1.45" /></td>
+      <td><LaTeX inline formula="18.53" /></td>
+      <td><LaTeX inline formula="0.465" /></td>
+      <td><LaTeX inline formula="0.222" /></td>
+    </tr>
+    <tr>
+      <td>FlowMo-Lo<sup>†</sup></td>
+      <td>1D</td>
+      <td><LaTeX inline formula="256" /></td>
+      <td><LaTeX inline formula="2^{18}" /></td>
+      <td><LaTeX inline formula="0.95" /></td>
+      <td><LaTeX inline formula="22.07" /></td>
+      <td><LaTeX inline formula="0.649" /></td>
+      <td><LaTeX inline formula="0.113" /></td>
+    </tr>
+    <tr>
+      <td>FlowMo-Hi<sup>†</sup></td>
+      <td>1D</td>
+      <td><LaTeX inline formula="1,\!024" /></td>
+      <td><LaTeX inline formula="2^{14}" /></td>
+      <td><LaTeX inline formula="0.56" /></td>
+      <td><LaTeX inline formula="24.93" /></td>
+      <td><LaTeX inline formula="0.785" /></td>
+      <td><LaTeX inline formula="0.073" /></td>
+    </tr>
+    <tr class="border-t">
+      <td><strong>Selftok (Ours)</strong></td>
+      <td>1D</td>
+      <td><LaTeX inline formula="512" /></td>
+      <td><LaTeX inline formula="2^{15}" /></td>
+      <td><LaTeX inline formula="\mathbf{0.70}" /></td>
+      <td><LaTeX inline formula="\mathbf{24.14}" /></td>
+      <td><LaTeX inline formula="\mathbf{0.709}" /></td>
+      <td><LaTeX inline formula="\mathbf{0.084}" /></td>
+    </tr>
+    <tr>
+      <td><strong>Selftok (Ours)</strong></td>
+      <td>1D</td>
+      <td><LaTeX inline formula="1,\!024" /></td>
+      <td><LaTeX inline formula="2^{15}" /></td>
+      <td><LaTeX inline formula="\mathbf{0.54}" /></td>
+      <td><LaTeX inline formula="\mathbf{26.30}" /></td>
+      <td><LaTeX inline formula="\mathbf{0.805}" /></td>
+      <td><LaTeX inline formula="\mathbf{0.063}" /></td>
+    </tr>
+  </tbody>
+  <caption>
+    Reconstruction performance of different tokenizers on <LaTeX inline formula="256 \times 256" /> - resolution ImageNet 50k validation set.
+    <sup>†</sup> Results from the original paper.
+  </caption>
+</Table>
+
+{/* ## Image comparison slider
 
 An interactive, accessible slider component with keyboard navigation.
 <Figure>
@@ -113,39 +338,11 @@ Use the two columns component to display two columns of content. In this example
     <Splat slot="figure" client:idle />
     <span slot="caption">Now look at this <a href="https://en.wikipedia.org/wiki/Gaussian_splatting">Gaussian splat</a>, rendered with a React component.</span>
   </Figure>
-</TwoColumns>
+</TwoColumns> */}
 
-## Heading levels
-
-Use headings to divide your content into sections.
-
-### Heading 3
-
-Go down a level to heading 3...
-
-#### Heading 4
-
-...and down again to heading 4.
-
-## LaTeX
-
-You can also add LaTeX formulas, rendered during the build process using [KaTeX](https://katex.org/) so they're quick to load for visitors of your project page. You can write them inline, like this: <LaTeX inline formula="a^2 + b^2 = c^2" />. Or, you can write them as a block:
-
-<LaTeX formula="\int_a^b f(x) dx" />
-
-## Tables
-
-You can add simple tables using [GitHub Flavored Markdown syntax](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables):
-
-| Model | Accuracy | F1 score | Training time (hours) |
-| :--- | :---: | :---: | :---: |
-| BERT-base | 0.89 | 0.87 | 4.5 |
-| RoBERTa-large | 0.92 | 0.91 | 7.2 |
-| DistilBERT | 0.86 | 0.84 | 2.1 |
-| XLNet | 0.90 | 0.89 | 6.8 |
 
 ## BibTeX citation
-
+{/* 
 ```bibtex
 @misc{roman2024academic,
   author = "{Roman Hauksson}",
@@ -153,4 +350,4 @@ You can add simple tables using [GitHub Flavored Markdown syntax](https://docs.g
   year = "2024",
   howpublished = "\url{https://research-template.roman.technology}",
 }
-```
+``` */}
