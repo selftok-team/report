@@ -29,6 +29,8 @@ import figure_tokenizer from "../assets/figure_tokenizer.png"
 import T2I_gallery_crop from "../assets/T2I_gallery_crop.png"
 import single_editing from "../assets/single_editing.png"
 import multi_editing from "../assets/multi_editing.png"
+import inter_recon from "../assets/interpolation_reconstruction.png"
+import rl_res from "../assets/fig_rl_res.png"
 
 
 import CodeBlock from "../components/CodeBlock.astro";
@@ -44,27 +46,11 @@ export const components = {pre: CodeBlock, table: Table}
     },
   ]}
   links={[
-    /*TODO: add link*/
-    {/* {
-      name: "Paper",
-      url: "",
-      icon: "ri:file-pdf-2-line",
-    },
-    {
-      name: "Code",
-      url: "https://github.com/RomanHauksson/academic-project-astro-template",
-      icon: "ri:github-line",
-    },
     {
       name: "arXiv",
       url: "",
-      icon: "academicons:arxiv",
-    },
-    {
-      name: "Bluesky",
-      url: "",
-      icon: "ri:bluesky-line"
-    } */}
+      icon: "academicons:arxiv"
+    }
   ]}
   />
 
@@ -110,7 +96,26 @@ Therefore, we believe that Selftok effectively addresses the long-standing chall
   </span>
 </Figure>
 
+
+### Progressive Reconstruction & Interpolation
+
+<Figure>
+  <Image slot="figure" source={inter_recon} altText="Illustration of progressive reconstruction and interpolation" />
+  <span slot="caption">
+    Progressive reconstruction (left to right): Reconstructions by progressively masking out a shorter sequence of tokens before inputting to the decoder.
+    Interpolation (left to right): Reconstructions by gradually replacing tokens of the left image with those of the right one.
+    All methods except Selftok exhibit strong spatial characteristics *i.e.*, tokens<LaTeX inline formula="\Leftrightarrow" />patches).
+  </span>
+</Figure>
+
+
+<HighlightedSection>
+
 ## Selftok: Self-Consistency Tokenizer
+
+</HighlightedSection>
+
+### Architecture
 
 <Figure>
   <Image slot="figure" source={figure_tokenizer} altText="Selftok architecture diagram" />
@@ -343,8 +348,14 @@ Use the two columns component to display two columns of content. In this example
 </HighlightedSection>
 
 ### Text-to-Image Generation
+#### Text-to-Image generation results by Selftok using the text prompts of DPG-Bench
 <Figure>
   <Image slot="figure" source={T2I_gallery_crop} altText="T2I examples"/>
+</Figure>
+
+#### Selftok-based visual RL
+<Figure>
+  <Image slot="figure" source={rl_res} altText="visual RL exmaples"/>
 </Figure>
 
 ### Single-turn Image Editing
