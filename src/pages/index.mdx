@@ -38,11 +38,6 @@ import CodeBlock from "../components/CodeBlock.astro";
 import Table from "../components/Table.astro";
 export const components = {pre: CodeBlock, table: Table}
 
-<p style="text-align: center; font-size: 0.9em;">
-  Our previous work has been accepted for an oral presentation at CVPR 2025. 
-  You can find more details at the following <a href="https://ddt-llama.github.io/">link</a>.
-</p>
-
 <Header
   title={frontmatter.title}
   authors={[
@@ -64,6 +59,11 @@ export const components = {pre: CodeBlock, table: Table}
     }
   ]}
   />
+
+<div class="text-center text-xs text-gray-500 mt-2 mb-6">
+  Our previous work has been accepted for an oral presentation at CVPR 2025. 
+  You can find more details at the following <a href="https://ddt-llama.github.io/" class="text-blue-500 hover:underline">link</a>.
+</div>
 
 {/* <Video source={outside} /> */}
 
