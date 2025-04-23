@@ -45,3 +45,7 @@ ol {
 h1, h2, h3 {
   text-align: center;
 }
+
+mjx-container svg {
+  display: inline !important;
+}
