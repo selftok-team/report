@@ -32,7 +32,6 @@ import single_editing from "../assets/single_editing.png"
 import multi_editing from "../assets/multi_editing.png"
 import inter_recon from "../assets/interpolation_reconstruction.png"
 import rl_res from "../assets/fig_rl_res.png"
-import paper_pdf from "../../public/Selftok.pdf"
 
 
 import CodeBlock from "../components/CodeBlock.astro";
@@ -67,6 +66,8 @@ export const components = {pre: CodeBlock, table: Table}
 
 ## Abstract
 
+</HighlightedSection>
+
 We completely discard the conventional *spatial prior* in image representation and introduce a novel *discrete* visual tokenizer: **Self-Consistency Tokenizer (Selftok)**. At its design core, we compose an autoregressive (AR) prior—mirroring the causal structure of language—into visual tokens by using the reverse diffusion process of image generation. The *AR property* makes Selftok fundamentally distinct from traditional spatial tokens in the following two key ways:
 
 - **Selftok offers an elegant and minimalist approach to *unify diffusion and AR* for vision-language models**: By representing images with Selftok tokens, we can train vision-language models (VLMs) using a purely discrete autoregressive architecture—like that in LLMs—without requiring additional modules or training objectives.  
@@ -75,9 +76,12 @@ We completely discard the conventional *spatial prior* in image representation a
 Besides the AR property, Selftok is also a **SOTA tokenizer** that achieves both high-quality reconstruction and high compression bit rate. After representing the training images as Selftok tokens, as a pure AR model, our VLM achieves both **SOTA visual comprehension and generation performances**. Impressively, without using any text-image training pairs, a simple policy gradient RL working in the visual tokens can significantly boost the visual generation benchmark, surpassing all the existing models by a large margin.  
 
 Therefore, we believe that Selftok effectively addresses the long-standing challenge that visual tokens cannot support effective RL. When combined with the well-established strengths of RL in LLMs, this brings us one step closer to realizing a truly multimodal LLM.
-</HighlightedSection>
+
+<HighlightedSection>
 
 ## Introduction
+
+</HighlightedSection>
 
 ### Why Discrete?
 
@@ -240,7 +244,7 @@ Therefore, we believe that Selftok effectively addresses the long-standing chall
       <td><LaTeX inline formula="0.624" /></td>
       <td><LaTeX inline formula="0.109" /></td>
     </tr>
-    <tr class="border-t">
+    <tr class="border-t border-black">
       <td>TiTok-L-32</td>
       <td>1D</td>
       <td><LaTeX inline formula="32" /></td>
@@ -300,7 +304,7 @@ Therefore, we believe that Selftok effectively addresses the long-standing chall
       <td><LaTeX inline formula="0.785" /></td>
       <td><LaTeX inline formula="0.073" /></td>
     </tr>
-    <tr class="border-t">
+    <tr class="border-t border-black">
       <td><strong>Selftok (Ours)</strong></td>
       <td>1D</td>
       <td><LaTeX inline formula="512" /></td>
@@ -325,6 +329,444 @@ Therefore, we believe that Selftok effectively addresses the long-standing chall
     Reconstruction performance of different tokenizers on <LaTeX inline formula="256 \times 256" /> - resolution ImageNet 50k validation set.
     <sup>†</sup> Results from the original paper.
   </caption>
+</Table>
+
+<Table>
+  <caption>Evaluation of text-to-image generation ability on GenEval benchmark. 
+  Janus-Pro-7B† represents the result of our evaluation.
+  Janus-Pro-7B-Zero represents a model that has undergone the same visual RL process as Selftok-Pre-Zero and Selftok-Zero. † represents the result of our evaluation. ‡ GPT-4o results are from OpenAI's technical report.</caption>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Method</th>
+      <th>Single Obj.</th>
+      <th>Two Obj.</th>
+      <th>Counting</th>
+      <th>Colors</th>
+      <th>Position</th>
+      <th>Color Attr.</th>
+      <th>Overall</th>
+    </tr>
+  </thead>
+  <tbody>
+    {/* Diffusion Only */}
+    <tr>
+      <td rowSpan={7}>Diffusion Only</td>
+      <td>PixArt-α</td>
+      <td><LaTeX inline formula="98" /></td>
+      <td><LaTeX inline formula="50" /></td>
+      <td><LaTeX inline formula="44" /></td>
+      <td><LaTeX inline formula="80" /></td>
+      <td><LaTeX inline formula="8" /></td>
+      <td><LaTeX inline formula="7" /></td>
+      <td><LaTeX inline formula="48" /></td>
+    </tr>
+    <tr>
+      <td>SDXL</td>
+      <td><LaTeX inline formula="98" /></td>
+      <td><LaTeX inline formula="74" /></td>
+      <td><LaTeX inline formula="39" /></td>
+      <td><LaTeX inline formula="85" /></td>
+      <td><LaTeX inline formula="15" /></td>
+      <td><LaTeX inline formula="23" /></td>
+      <td><LaTeX inline formula="55" /></td>
+    </tr>
+    <tr>
+      <td>FLUX.1-dev</td>
+      <td><LaTeX inline formula="98" /></td>
+      <td><LaTeX inline formula="79" /></td>
+      <td><LaTeX inline formula="73" /></td>
+      <td><LaTeX inline formula="77" /></td>
+      <td><LaTeX inline formula="22" /></td>
+      <td><LaTeX inline formula="45" /></td>
+      <td><LaTeX inline formula="66" /></td>
+    </tr>
+    <tr>
+      <td>DALL-E 3</td>
+      <td><LaTeX inline formula="96" /></td>
+      <td><LaTeX inline formula="87" /></td>
+      <td><LaTeX inline formula="47" /></td>
+      <td><LaTeX inline formula="83" /></td>
+      <td><LaTeX inline formula="43" /></td>
+      <td><LaTeX inline formula="45" /></td>
+      <td><LaTeX inline formula="67" /></td>
+    </tr>
+    <tr>
+      <td>SD3-Medium</td>
+      <td><LaTeX inline formula="99" /></td>
+      <td><LaTeX inline formula="94" /></td>
+      <td><LaTeX inline formula="72" /></td>
+      <td><LaTeX inline formula="89" /></td>
+      <td><LaTeX inline formula="33" /></td>
+      <td><LaTeX inline formula="60" /></td>
+      <td><LaTeX inline formula="74" /></td>
+    </tr>
+    <tr>
+      <td>CogView4-6B</td>
+      <td><LaTeX inline formula="99" /></td>
+      <td><LaTeX inline formula="86" /></td>
+      <td><LaTeX inline formula="66" /></td>
+      <td><LaTeX inline formula="79" /></td>
+      <td><LaTeX inline formula="48" /></td>
+      <td><LaTeX inline formula="58" /></td>
+      <td><LaTeX inline formula="73" /></td>
+    </tr>
+    <tr>
+      <td>HiDream-I1</td>
+      <td><LaTeX inline formula="100" /></td>
+      <td><LaTeX inline formula="98" /></td>
+      <td><LaTeX inline formula="79" /></td>
+      <td><LaTeX inline formula="91" /></td>
+      <td><LaTeX inline formula="60" /></td>
+      <td><LaTeX inline formula="72" /></td>
+      <td><LaTeX inline formula="83" /></td>
+    </tr>
+
+    {/* Hybrid Model */}
+    <tr class="border-t border-black">
+      <td rowSpan={5}>Hybrid Model</td>
+      <td>SEED-X</td>
+      <td><LaTeX inline formula="97" /></td>
+      <td><LaTeX inline formula="58" /></td>
+      <td><LaTeX inline formula="26" /></td>
+      <td><LaTeX inline formula="80" /></td>
+      <td><LaTeX inline formula="19" /></td>
+      <td><LaTeX inline formula="14" /></td>
+      <td><LaTeX inline formula="49" /></td>
+    </tr>
+    <tr>
+      <td>Transfusion</td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="63" /></td>
+    </tr>
+    <tr>
+      <td>D-DiT</td>
+      <td><LaTeX inline formula="97" /></td>
+      <td><LaTeX inline formula="80" /></td>
+      <td><LaTeX inline formula="54" /></td>
+      <td><LaTeX inline formula="76" /></td>
+      <td><LaTeX inline formula="32" /></td>
+      <td><LaTeX inline formula="50" /></td>
+      <td><LaTeX inline formula="65" /></td>
+    </tr>
+    <tr>
+      <td>Show-o</td>
+      <td><LaTeX inline formula="98" /></td>
+      <td><LaTeX inline formula="80" /></td>
+      <td><LaTeX inline formula="66" /></td>
+      <td><LaTeX inline formula="84" /></td>
+      <td><LaTeX inline formula="31" /></td>
+      <td><LaTeX inline formula="50" /></td>
+      <td><LaTeX inline formula="68" /></td>
+    </tr>
+    <tr>
+      <td>GPT-4o‡</td>
+      <td><LaTeX inline formula="99" /></td>
+      <td><LaTeX inline formula="92" /></td>
+      <td><LaTeX inline formula="85" /></td>
+      <td><LaTeX inline formula="91" /></td>
+      <td><LaTeX inline formula="75" /></td>
+      <td><LaTeX inline formula="66" /></td>
+      <td><LaTeX inline formula="85" /></td>
+    </tr>
+
+    {/* Pure dAR */}
+    <tr class="border-t border-black">
+      <td rowSpan={11}>Pure dAR</td>
+      <td>Emu3-Gen></td>
+      <td><LaTeX inline formula="98" /></td>
+      <td><LaTeX inline formula="71" /></td>
+      <td><LaTeX inline formula="34" /></td>
+      <td><LaTeX inline formula="81" /></td>
+      <td><LaTeX inline formula="17" /></td>
+      <td><LaTeX inline formula="21" /></td>
+      <td><LaTeX inline formula="54" /></td>
+    </tr>
+    <tr>
+      <td>TokenFlow-XL</td>
+      <td><LaTeX inline formula="95" /></td>
+      <td><LaTeX inline formula="60" /></td>
+      <td><LaTeX inline formula="41" /></td>
+      <td><LaTeX inline formula="81" /></td>
+      <td><LaTeX inline formula="16" /></td>
+      <td><LaTeX inline formula="24" /></td>
+      <td><LaTeX inline formula="55" /></td>
+    </tr>
+    <tr>
+      <td>ILLUME+</td>
+      <td><LaTeX inline formula="99" /></td>
+      <td><LaTeX inline formula="88" /></td>
+      <td><LaTeX inline formula="62" /></td>
+      <td><LaTeX inline formula="84" /></td>
+      <td><LaTeX inline formula="42" /></td>
+      <td><LaTeX inline formula="53" /></td>
+      <td><LaTeX inline formula="72" /></td>
+    </tr>
+    <tr>
+      <td>Infinity</td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="85" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="49" /></td>
+      <td><LaTeX inline formula="57" /></td>
+      <td><LaTeX inline formula="73" /></td>
+    </tr>
+    <tr class="border-t border-black">
+      <td>Janus-Pro-7B</td>
+      <td><LaTeX inline formula="99" /></td>
+      <td><LaTeX inline formula="89" /></td>
+      <td><LaTeX inline formula="59" /></td>
+      <td><LaTeX inline formula="90" /></td>
+      <td><LaTeX inline formula="79" /></td>
+      <td><LaTeX inline formula="66" /></td>
+      <td><LaTeX inline formula="80" /></td>
+    </tr>
+    <tr>
+      <td>Janus-Pro-7B†</td>
+      <td><LaTeX inline formula="98" /></td>
+      <td><LaTeX inline formula="88" /></td>
+      <td><LaTeX inline formula="58" /></td>
+      <td><LaTeX inline formula="88" /></td>
+      <td><LaTeX inline formula="76" /></td>
+      <td><LaTeX inline formula="65" /></td>
+      <td><LaTeX inline formula="79" /></td>
+    </tr>
+    <tr>
+      <td>Janus-Pro-7B-Zero</td>
+      <td><LaTeX inline formula="98_{\textcolor{ForestGreen}{+0}}" /></td>
+      <td><LaTeX inline formula="95_{\textcolor{ForestGreen}{+7}}" /></td>
+      <td><LaTeX inline formula="58_{\textcolor{ForestGreen}{+0}}" /></td>
+      <td><LaTeX inline formula="89_{\textcolor{ForestGreen}{+1}}" /></td>
+      <td><LaTeX inline formula="90_{\textcolor{ForestGreen}{+14}}" /></td>
+      <td><LaTeX inline formula="81_{\textcolor{ForestGreen}{+16}}" /></td>
+      <td><LaTeX inline formula="85_{\textcolor{ForestGreen}{+6}}" /></td>
+    </tr>
+    <tr class="border-t border-black">
+      <td>Selftok-Pre</td>
+      <td><LaTeX inline formula="99" /></td>
+      <td><LaTeX inline formula="57" /></td>
+      <td><LaTeX inline formula="58" /></td>
+      <td><LaTeX inline formula="81" /></td>
+      <td><LaTeX inline formula="22" /></td>
+      <td><LaTeX inline formula="43" /></td>
+      <td><LaTeX inline formula="60" /></td>
+    </tr>
+    <tr>
+      <td>Sefltok-Pre-Zero</td>
+      <td><LaTeX inline formula="99_{\textcolor{ForestGreen}{+0}}" /></td>
+      <td><LaTeX inline formula="94_{\textcolor{ForestGreen}{+37}}" /></td>
+      <td><LaTeX inline formula="58_{\textcolor{ForestGreen}{+0}}" /></td>
+      <td><LaTeX inline formula="89_{\textcolor{ForestGreen}{+8}}" /></td>
+      <td><LaTeX inline formula="89_{\textcolor{ForestGreen}{+67}}" /></td>
+      <td><LaTeX inline formula="73_{\textcolor{ForestGreen}{+30}}" /></td>
+      <td><LaTeX inline formula="84_{\textcolor{ForestGreen}{+24}}" /></td>
+    </tr>
+    <tr class="border-t border-black">
+      <td>Selftok-SFT</td>
+      <td><LaTeX inline formula="100" /></td>
+      <td><LaTeX inline formula="79" /></td>
+      <td><LaTeX inline formula="66" /></td>
+      <td><LaTeX inline formula="91" /></td>
+      <td><LaTeX inline formula="45" /></td>
+      <td><LaTeX inline formula="62" /></td>
+      <td><LaTeX inline formula="74" /></td>
+    </tr>
+    <tr>
+      <td>Selftok-Zero</td>
+      <td><LaTeX inline formula="99_{\textcolor{red}{-1}}" /></td>
+      <td><LaTeX inline formula="95_{\textcolor{ForestGreen}{+16}}" /></td>
+      <td><LaTeX inline formula="88_{\textcolor{ForestGreen}{+22}}" /></td>
+      <td><LaTeX inline formula="94_{\textcolor{ForestGreen}{+3}}" /></td>
+      <td><LaTeX inline formula="96_{\textcolor{ForestGreen}{+51}}" /></td>
+      <td><LaTeX inline formula="79_{\textcolor{ForestGreen}{+17}}" /></td>
+      <td><LaTeX inline formula="92_{\textcolor{ForestGreen}{+18}}" /></td>
+    </tr>
+  </tbody>
+</Table>
+
+<Table>
+  <caption>Performances on DPG-Bench. The methods in this table are all generation-specific models except Show-o, Janus-Pro, and Selftok. † represents the result of our evaluation.</caption>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Method</th>
+      <th>Global</th>
+      <th>Entity</th>
+      <th>Attribute</th>
+      <th>Relation</th>
+      <th>Other</th>
+      <th>Overall</th>
+    </tr>
+  </thead>
+  <tbody>
+    {/* Diffusion Only */}
+    <tr>
+      <td rowSpan={7}>Diffusion Only</td>
+      <td>PixArt-α</td>
+      <td><LaTeX inline formula="74.97" /></td>
+      <td><LaTeX inline formula="79.32" /></td>
+      <td><LaTeX inline formula="78.60" /></td>
+      <td><LaTeX inline formula="82.57" /></td>
+      <td><LaTeX inline formula="76.96" /></td>
+      <td><LaTeX inline formula="71.11" /></td>
+    </tr>
+    <tr>
+      <td>SDXL</td>
+      <td><LaTeX inline formula="83.27" /></td>
+      <td><LaTeX inline formula="82.43" /></td>
+      <td><LaTeX inline formula="80.91" /></td>
+      <td><LaTeX inline formula="86.76" /></td>
+      <td><LaTeX inline formula="80.41" /></td>
+      <td><LaTeX inline formula="74.65" /></td>
+    </tr>
+    <tr>
+      <td>DALL-E 3</td>
+      <td><LaTeX inline formula="90.97" /></td>
+      <td><LaTeX inline formula="89.61" /></td>
+      <td><LaTeX inline formula="88.39" /></td>
+      <td><LaTeX inline formula="90.58" /></td>
+      <td><LaTeX inline formula="89.83" /></td>
+      <td><LaTeX inline formula="83.50" /></td>
+    </tr>
+    <tr>
+      <td>SD3-Medium</td>
+      <td><LaTeX inline formula="87.90" /></td>
+      <td><LaTeX inline formula="91.01" /></td>
+      <td><LaTeX inline formula="88.83" /></td>
+      <td><LaTeX inline formula="80.70" /></td>
+      <td><LaTeX inline formula="88.68" /></td>
+      <td><LaTeX inline formula="84.08" /></td>
+    </tr>
+    <tr>
+      <td>FLUX.1-dev</td>
+      <td><LaTeX inline formula="85.80" /></td>
+      <td><LaTeX inline formula="86.79" /></td>
+      <td><LaTeX inline formula="89.98" /></td>
+      <td><LaTeX inline formula="90.04" /></td>
+      <td><LaTeX inline formula="89.90" /></td>
+      <td><LaTeX inline formula="83.79" /></td>
+    </tr>
+    <tr>
+      <td>CogView4-6B</td>
+      <td><LaTeX inline formula="83.85" /></td>
+      <td><LaTeX inline formula="90.35" /></td>
+      <td><LaTeX inline formula="91.17" /></td>
+      <td><LaTeX inline formula="91.14" /></td>
+      <td><LaTeX inline formula="87.29" /></td>
+      <td><LaTeX inline formula="85.13" /></td>
+    </tr>
+    <tr>
+      <td>HiDream-I1</td>
+      <td><LaTeX inline formula="76.44" /></td>
+      <td><LaTeX inline formula="90.22" /></td>
+      <td><LaTeX inline formula="89.48" /></td>
+      <td><LaTeX inline formula="93.74" /></td>
+      <td><LaTeX inline formula="91.83" /></td>
+      <td><LaTeX inline formula="85.89" /></td>
+    </tr>
+
+    {/* Hybrid Model */}
+    <tr class="border-t border-black">
+      <td rowSpan={1}>Hybrid Model</td>
+      <td>Show-o</td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="67.48" /></td>
+    </tr>
+
+    {/* Pure dAR */}
+    <tr class="border-t border-black">
+      <td rowSpan={9}>Pure dAR</td>
+      <td>Emu3-Gen</td>
+      <td><LaTeX inline formula="85.21" /></td>
+      <td><LaTeX inline formula="86.68" /></td>
+      <td><LaTeX inline formula="86.84" /></td>
+      <td><LaTeX inline formula="90.22" /></td>
+      <td><LaTeX inline formula="83.15" /></td>
+      <td><LaTeX inline formula="80.60" /></td>
+    </tr>
+    <tr>
+      <td>Janus</td>
+      <td><LaTeX inline formula="82.33" /></td>
+      <td><LaTeX inline formula="87.38" /></td>
+      <td><LaTeX inline formula="87.70" /></td>
+      <td><LaTeX inline formula="85.46" /></td>
+      <td><LaTeX inline formula="86.41" /></td>
+      <td><LaTeX inline formula="79.68" /></td>
+    </tr>
+    <tr>
+      <td>Infinity</td>
+      <td><LaTeX inline formula="93.11" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="90.76" /></td>
+      <td><LaTeX inline formula="-" /></td>
+      <td><LaTeX inline formula="83.46" /></td>
+    </tr>
+    <tr>
+      <td>Janus-Pro-7B</td>
+      <td><LaTeX inline formula="86.90" /></td>
+      <td><LaTeX inline formula="88.90" /></td>
+      <td><LaTeX inline formula="89.40" /></td>
+      <td><LaTeX inline formula="89.32" /></td>
+      <td><LaTeX inline formula="89.48" /></td>
+      <td><LaTeX inline formula="84.19" /></td>
+    </tr>
+    <tr class="border-t border-black">
+      <td>Janus-Pro-7B†</td>
+      <td><LaTeX inline formula="83.59" /></td>
+      <td><LaTeX inline formula="89.74" /></td>
+      <td><LaTeX inline formula="87.51" /></td>
+      <td><LaTeX inline formula="92.94" /></td>
+      <td><LaTeX inline formula="81.20" /></td>
+      <td><LaTeX inline formula="83.48" /></td>
+    </tr>
+    <tr>
+      <td>Janus-Pro-7B-Zero</td>
+      <td><LaTeX inline formula="84.50_{\textcolor{green}{+0.91}}" /></td>
+      <td><LaTeX inline formula="90.13_{\textcolor{green}{+0.39}}" /></td>
+      <td><LaTeX inline formula="87.29_{\textcolor{red}{-0.22}}" /></td>
+      <td><LaTeX inline formula="93.44_{\textcolor{green}{+0.50}}" /></td>
+      <td><LaTeX inline formula="82.40_{\textcolor{green}{+1.20}}" /></td>
+      <td><LaTeX inline formula="84.49_{\textcolor{green}{+1.01}}" /></td>
+    </tr>
+    <tr class="border-t border-black">
+      <td>Selftok-Pre</td>
+      <td><LaTeX inline formula="87.41" /></td>
+      <td><LaTeX inline formula="87.09" /></td>
+      <td><LaTeX inline formula="88.08" /></td>
+      <td><LaTeX inline formula="87.89" /></td>
+      <td><LaTeX inline formula="87.42" /></td>
+      <td><LaTeX inline formula="80.37" /></td>
+    </tr>
+    <tr>
+      <td>Selftok-SFT</td>
+      <td><LaTeX inline formula="82.07" /></td>
+      <td><LaTeX inline formula="88.15" /></td>
+      <td><LaTeX inline formula="87.69" /></td>
+      <td><LaTeX inline formula="93.68" /></td>
+      <td><LaTeX inline formula="80.40" /></td>
+      <td><LaTeX inline formula="81.80" /></td>
+    </tr>
+    <tr>
+      <td>Selftok-Zero</td>
+      <td><LaTeX inline formula="83.59_{\textcolor{green}{+1.52}}" /></td>
+      <td><LaTeX inline formula="91.78_{\textcolor{green}{+3.63}}" /></td>
+      <td><LaTeX inline formula="89.04_{\textcolor{green}{+1.35}}" /></td>
+      <td><LaTeX inline formula="95.26_{\textcolor{green}{+1.58}}" /></td>
+      <td><LaTeX inline formula="82.80_{\textcolor{green}{+2.40}}" /></td>
+      <td><LaTeX inline formula="85.32_{\textcolor{green}{+3.52}}" /></td>
+    </tr>
+  </tbody>
 </Table>
 
 {/* ## Image comparison slider
