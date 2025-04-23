@@ -18,6 +18,7 @@ import LaTeX from "../components/LaTeX.astro";
 
 import { ImageComparison } from "../components/ImageComparison.tsx";
 
+{/* import assets */}
 import outside from "../assets/outside.mp4";
 import transformer from "../assets/transformer.webp";
 import Splat from "../components/Splat.tsx"
@@ -31,6 +32,7 @@ import single_editing from "../assets/single_editing.png"
 import multi_editing from "../assets/multi_editing.png"
 import inter_recon from "../assets/interpolation_reconstruction.png"
 import rl_res from "../assets/fig_rl_res.png"
+import paper_pdf from "../../public/Selftok.pdf"
 
 
 import CodeBlock from "../components/CodeBlock.astro";
@@ -50,6 +52,11 @@ export const components = {pre: CodeBlock, table: Table}
       name: "arXiv",
       url: "",
       icon: "academicons:arxiv"
+    },
+    {
+      name: "Paper",
+      url: "Selftok.pdf", // relative to public
+      icon: "ri:file-pdf-2-line"
     }
   ]}
   />
