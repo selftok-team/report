@@ -47,3 +47,7 @@ ul {
 ol {
   @apply prose list-decimal list-inside w-full;
 }
+
+h1, h2, h3 {
+  text-align: center;
+}

@@ -70,23 +70,6 @@ export const components = {pre: CodeBlock, table: Table}
 
 {/* <Video source={outside} /> */}
 
-## Examples
-
-### T2I Examples
-<Figure>
-  <Image slot="figure" source={T2I_gallery_crop} altText="T2I examples"/>
-</Figure>
-
-### Single Editing Examples
-<Figure>
-  <Image slot="figure" source={single_editing} altText="Single editing examples"/>
-</Figure>
-
-### Multi-round Editing Examples
-<Figure>
-  <Image slot="figure" source={multi_editing} altText="multi editing examples"/>
-</Figure>
-
 <HighlightedSection>
 
 ## Abstract
@@ -124,7 +107,6 @@ Therefore, we believe that Selftok effectively addresses the long-standing chall
     (a) As an image can be viewed as the effect of spatial pixels (or patches), observing any part of it introduces spurious dependencies among spatial tokens, making them non-AR. 
     (b) Due to the anti-causal links (red) for spatial tokens, learning the locally optimal policy <LaTeX inline formula="\pi^*_4" /> for a later token (<em>e.g.</em>, <LaTeX inline formula="v_4" />) can propagate backward and interfere with earlier tokens that were already optimized (<em>e.g.</em>, <LaTeX inline formula="v_1,v_2,v_3" />). 
     In contrast, AR tokens without such links do not have this issue. 
-    A more formal illustration is in Section 4.1.
   </span>
 </Figure>
 
@@ -140,7 +122,7 @@ Therefore, we believe that Selftok effectively addresses the long-standing chall
   </span>
 </Figure>
 
-### Validation
+### Main Results
 
 <Table>
   <thead>
@@ -356,6 +338,24 @@ Use the two columns component to display two columns of content. In this example
   </Figure>
 </TwoColumns> */}
 
+<HighlightedSection>
+## Examples
+</HighlightedSection>
+
+### Text-to-Image Generation
+<Figure>
+  <Image slot="figure" source={T2I_gallery_crop} altText="T2I examples"/>
+</Figure>
+
+### Single-turn Image Editing
+<Figure>
+  <Image slot="figure" source={single_editing} altText="Single editing examples"/>
+</Figure>
+
+### Multi-turn Image Editing
+<Figure>
+  <Image slot="figure" source={multi_editing} altText="multi editing examples"/>
+</Figure>
 
 ## BibTeX citation
 {/* 
