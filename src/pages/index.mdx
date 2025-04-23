@@ -38,6 +38,11 @@ import CodeBlock from "../components/CodeBlock.astro";
 import Table from "../components/Table.astro";
 export const components = {pre: CodeBlock, table: Table}
 
+<p style="text-align: center; font-size: 0.9em;">
+  Our previous work has been accepted for an oral presentation at CVPR 2025. 
+  You can find more details at the following <a href="https://ddt-llama.github.io/">link</a>.
+</p>
+
 <Header
   title={frontmatter.title}
   authors={[
@@ -115,7 +120,7 @@ Therefore, we believe that Selftok effectively addresses the long-standing chall
   <span slot="caption">
     Progressive reconstruction (left to right): Reconstructions by progressively masking out a shorter sequence of tokens before inputting to the decoder.
     Interpolation (left to right): Reconstructions by gradually replacing tokens of the left image with those of the right one.
-    All methods except Selftok exhibit strong spatial characteristics *i.e.*, tokens<LaTeX inline formula="\Leftrightarrow" />patches).
+    All methods except Selftok exhibit strong spatial characteristics *i.e.*, tokens<LaTeX inline formula="\Leftrightarrow" />patches.
   </span>
 </Figure>
 
